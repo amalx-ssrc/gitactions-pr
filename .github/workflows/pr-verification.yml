@@ -7,9 +7,10 @@ on:
 
 
 jobs: 
-  runs-on: ubuntu-latest
-  steps:
-    - name: getting pr 
-      run: |
-         echo ${{ github.event.pull_request.head.sha }}
+  pr-runn:
+    runs-on: ubuntu-latest
+    steps:
+        - name: getting pr 
+          run: |
+            echo ${{ github.event.pull_request.head.sha }}
   
