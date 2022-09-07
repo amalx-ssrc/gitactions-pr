@@ -14,3 +14,20 @@ jobs:
           run: |
             echo ${{ github.event.pull_request.head.sha }}
             echo ${{ github.head_ref }}
+        - name: checkout manifest repo
+          uses: actions/checkout@v3
+          with:
+            repository: 'amalx-ssrc/tii_sel4_manifest'
+            ref: 'tii/development'
+            path: 'tii_sel4_manifest'
+        - name: checkout sel4repo
+          uses: actions/checkout@v3
+          with:
+            path: sel4repo
+
+        - name: view all
+          run: |
+            ls
+            ls sel4repo 
+            ls tii_sel4_manifest
+            pwd
