@@ -48,5 +48,5 @@ jobs:
           run: |
             echo $REPO_NAME
             export REPO_NAME=camkes-tool
-            sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"tiiuae\" revision="\${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
+            sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"tiiuae\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
             cat tii_sel4_manifest/external.xml
