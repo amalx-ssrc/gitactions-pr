@@ -42,7 +42,11 @@ jobs:
           if:  github.event.pull_request.head.repo.full_name == github.repository
           run: |
             echo same repo
+            ${{ github.head_ref }}
         - name: PR from forked repository
           if: github.event.pull_request.head.repo.full_name != github.repository 
           run: |
-            echo pr repo
+            echo $REPO_NAME
+            export REPO_NAME=camkes-tool
+            sed -i "/$REPO_NAME.git/c\<extend-project name="camkes-tool.git"                remote="tiiuae" revision="${{ github.head_ref }}"/>." ./tii_sel4_manifest/external.xml
+            cat tii_sel4_manifest/external.xml
