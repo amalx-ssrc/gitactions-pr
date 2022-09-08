@@ -15,7 +15,11 @@ jobs:
             echo ${{ github.event.pull_request.head.sha }}
             echo ${{ github.head_ref }} === revision
             echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f2 
+            echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f1 
+
             echo "REPO_NAME=$(echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f2)" >> $GITHUB_ENV
+            echo "REPO_OWNER=$(echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f1)" >> $GITHUB_ENV
+
             
             echo PRrepo==${{ github.event.pull_request.head.repo.full_name }}
             echo ORrepo==${{ github.repository }}
@@ -37,16 +41,25 @@ jobs:
             ls tii_sel4_manifest
             pwd
             echo $REPO_NAME
-
-        - name: PR from same repository 
-          if:  github.event.pull_request.head.repo.full_name == github.repository
+        - name: manifest generation
           run: |
-            echo same repo
-            ${{ github.head_ref }}
-        - name: PR from forked repository
-          if: github.event.pull_request.head.repo.full_name != github.repository 
-          run: |
-            echo $REPO_NAME
             export REPO_NAME=camkes-tool
-            sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"tiiuae\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
+            if  ${{ github.event.pull_request.head.repo.full_name }} != ${{  github.repository }} ; then
+            echo pr from froked repo
+            fi
+            sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"REPO_OWNER\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
             cat tii_sel4_manifest/external.xml
+
+
+        # - name: PR from same repository 
+        #   if:  github.event.pull_request.head.repo.full_name == github.repository
+        #   run: |
+        #     echo same repo
+        #     ${{ github.head_ref }}
+        # - name: PR from forked repository
+        #   if: github.event.pull_request.head.repo.full_name != github.repository 
+        #   run: |
+        #     echo $REPO_NAME
+        #     export REPO_NAME=camkes-tool
+        #     sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"REPO_OWNER\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
+        #     cat tii_sel4_manifest/external.xml
