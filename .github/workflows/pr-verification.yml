@@ -40,7 +40,8 @@ jobs:
             export REPO_NAME=camkes-tool
             if  [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{  github.repository }}" ]] ; then
             echo pr from forked repo
-            sed -i "0,/remote/a <remote=\"$REPO_OWNER\" fetch=\"https://github.com/$REPO_OWNER\"/>" ./tii_sel4_manifest/external.xml
+            # sed -i "0,/remote/a <remote=\"$REPO_OWNER\" fetch=\"https://github.com/$REPO_OWNER\"/>" ./tii_sel4_manifest/external.xml
+            awk '!found && /fetch/ { print <remote=\"$REPO_OWNER\" fetch=\"https://github.com/$REPO_OWNER\"/>"; found=1 } 1' ./tii_sel4_manifest/external.xml
             fi
             sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"$REPO_OWNER\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
             cat tii_sel4_manifest/external.xml
