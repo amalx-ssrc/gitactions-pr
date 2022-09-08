@@ -1,1 +1,4 @@
 This "is" removed by This .
+this is new line
+this is new line
+this is new line

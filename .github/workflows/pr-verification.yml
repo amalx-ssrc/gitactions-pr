@@ -29,15 +29,9 @@ jobs:
             repository: 'amalx-ssrc/tii_sel4_manifest'
             ref: 'tii/development'
             path: 'tii_sel4_manifest'
-        - name: checkout sel4repo
-          uses: actions/checkout@v3
-          with:
-            path: sel4repo
-
         - name: view all
           run: |
             ls
-            ls sel4repo 
             ls tii_sel4_manifest
             pwd
             echo $REPO_NAME
@@ -45,7 +39,8 @@ jobs:
           run: |
             export REPO_NAME=camkes-tool
             if  [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{  github.repository }}" ]] ; then
-            echo pr from froked repo
+            echo pr from forked repo
+            sed -i "/fetch="/a <remote=\"$REPO_OWNER\" fetch=\"https://github.com/$REPO_OWNER\"/>"
             fi
             sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"REPO_OWNER\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
             cat tii_sel4_manifest/external.xml
