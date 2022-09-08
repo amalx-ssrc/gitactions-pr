@@ -39,10 +39,10 @@ jobs:
             echo $REPO_NAME
 
         - name: PR from same repository 
-          if: ${{ github.event.pull_request.head.repo.full_name }}==${{ github.repository }}
+          if:  github.event.pull_request.head.repo.full_name == github.repository
           run: |
             echo same repo
         - name: PR from forked repository
-          if: ${{ github.event.pull_request.head.repo.full_name }}!=${{ github.repository }}
+          if: github.event.pull_request.head.repo.full_name != github.repository 
           run: |
             echo pr repo
