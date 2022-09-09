@@ -17,8 +17,10 @@ jobs:
             echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f2 
             echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f1 
 
-            echo "REPO_NAME=$(echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f2)" >> $GITHUB_ENV
-            echo "REPO_OWNER=$(echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f1)" >> $GITHUB_ENV
+            echo "PR_REPO_NAME=$(echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f2)" >> $GITHUB_ENV
+            echo "PR_REPO_OWNER=$(echo ${{ github.event.pull_request.head.repo.full_name }} | cut -d/ -f1)" >> $GITHUB_ENV
+            echo "OR_REPO_NAME=$(echo ${{ github.repository }} | cut -d/ -f2)" >> $GITHUB_ENV
+
             echo $REPO_OWNER
             
             echo PRrepo==${{ github.event.pull_request.head.repo.full_name }}
@@ -38,12 +40,12 @@ jobs:
         - name: manifest generation
           run: |
             export REPO_NAME=camkes-tool
+            export OR_REPO_NAME=camkes-tool
             if  [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{  github.repository }}" ]] ; then
             echo pr from forked repo
-            sed -i "/<manifest>/a <remote=\"$REPO_OWNER\" fetch=\"https://github.com/$REPO_OWNER\"/>" ./tii_sel4_manifest/external.xml
-            #awk '!found && /fetch/ { print "<remote=\"$REPO_OWNER\" fetch=\"https://github.com/$REPO_OWNER\"/>"; found=1 } 1' ./tii_sel4_manifest/external.xml
+            sed -i "/<manifest>/a <remote=\"$PR_REPO_OWNER\" fetch=\"https://github.com/$PR_REPO_OWNER\"/>" ./tii_sel4_manifest/external.xml
             fi
-            sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"$REPO_OWNER\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
+            sed -i "/$OR_REPO_NAME.git/c\<extend-project name=\"$PR_REPO_NAME.git\"                remote=\"$PR_REPO_OWNER\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
             cat tii_sel4_manifest/external.xml
 
 
@@ -59,3 +61,4 @@ jobs:
         #     export REPO_NAME=camkes-tool
         #     sed -i "/$REPO_NAME.git/c\<extend-project name=\"$REPO_NAME.git\"                remote=\"REPO_OWNER\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
         #     cat tii_sel4_manifest/external.xml
+        #    awk '!found && /fetch/ { print "<remote=\"$REPO_OWNER\" fetch=\"https://github.com/$REPO_OWNER\"/>"; found=1 } 1' ./tii_sel4_manifest/external.xml
