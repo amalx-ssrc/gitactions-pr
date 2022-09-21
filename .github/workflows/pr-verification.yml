@@ -10,7 +10,7 @@ jobs:
   pr-run:
     runs-on: ubuntu-latest
     steps:
-        - name: getting pr 
+        - name: getting PR details
           run: |
             echo ${{ github.event.pull_request.head.sha }}
             echo ${{ github.head_ref }} === revision
@@ -39,11 +39,9 @@ jobs:
             echo $REPO_NAME
         - name: manifest generation
           run: |
-            export REPO_NAME=camkes-tool
-            export OR_REPO_NAME=camkes-tool
             if  [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{  github.repository }}" ]] ; then
             echo pr from forked repo
-            sed -i "/<manifest>/a <remote=\"$PR_REPO_OWNER\" fetch=\"https://github.com/$PR_REPO_OWNER\"/>" ./tii_sel4_manifest/external.xml
+            sed -i "/<manifest>/a <remote name=\"$PR_REPO_OWNER\" fetch=\"https://github.com/$PR_REPO_OWNER\"/>" ./tii_sel4_manifest/external.xml
             fi
             sed -i "/$OR_REPO_NAME.git/c\<extend-project name=\"$PR_REPO_NAME.git\"                remote=\"$PR_REPO_OWNER\" revision=\"${{ github.head_ref }}\"/>" ./tii_sel4_manifest/external.xml
             cat tii_sel4_manifest/external.xml
