@@ -1,0 +1,12 @@
+name: Repo-dispatch
+
+on:
+  repository_dispatch:
+    types: [testing-gitactons]
+
+jobs:
+  run_if_failure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Displaying webhook message
+        run: echo ${{ github.event.client_payload.message }}
